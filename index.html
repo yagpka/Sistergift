@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Secret Clubhouse</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Roboto:wght@400;700&family=Playfair+Display:ital,wght@1,400;1,600&family=Caveat&display=swap');
+
+        /* General Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            transition: background 0.5s ease-in-out;
+            color: #333;
+        }
+        
+        .hidden { display: none !important; }
+        .page { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+
+        /* --- Login Page Styles --- */
+        #login-page .login-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px 50px;
+            border-radius: 25px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+            border: 5px dashed #fff;
+        }
+        #login-page h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.8rem;
+            color: #e94057;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px #fdeff9;
+        }
+        .form-group { margin-bottom: 25px; }
+        label { display: block; font-weight: 700; margin-bottom: 8px; color: #555; font-size: 1.1rem; }
+        select, input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #login-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #f78ca0, #f9748f);
+            color: white;
+            font-size: 1.4rem;
+            font-family: 'Fredoka One', cursive;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(233, 64, 87, 0.4);
+            transition: transform 0.2s;
+        }
+        #login-button:hover { transform: translateY(-3px); }
+        #error-message { margin-top: 20px; padding: 10px; border-radius: 10px; font-weight: bold; background-color: #fdeaea; color: #ea4335; border: 2px dashed #f8a9a3; }
+        
+        /* --- Welcome Hero Page Styles --- */
+        #welcome-hero {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px 50px;
+            border-radius: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 800px;
+        }
+        #welcome-image {
+            width: 150px; height: 150px; border-radius: 50%; border: 6px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2); object-fit: cover; margin-right: 40px; flex-shrink: 0;
+        }
+        #welcome-text {
+            font-family: 'Fredoka One', cursive; font-size: 2.8rem; color: #333;
+            line-height: 1.4; margin: 0; text-align: left;
+        }
+        .navigation-buttons { margin-top: 40px; }
+        .nav-button {
+            padding: 12px 30px; border: none; border-radius: 30px;
+            font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+            margin: 0 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        #next-button { background-color: #4CAF50; color: white; }
+        #back-button-hero { background-color: #e94057; color: white; }
+        #next-button:hover, #back-button-hero:hover { transform: scale(1.05); box-shadow: 0 6px 15px rgba(0,0,0,0.2); }
+        
+        /* --- Memories Page Styles --- */
+        #memories-page {
+             overflow-y: auto; /* Allow scrolling */
+             justify-content: flex-start;
+        }
+        .memories-container {
+            background-color: #fff;
+            width: 100%;
+            max-width: 900px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            padding: 40px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .memories-container h2, .memories-container h3 {
+            font-family: 'Fredoka One', cursive;
+            color: #e94057;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .memories-container h2 { font-size: 2.5rem; }
+        .memories-container h3 { font-size: 1.8rem; border-top: 2px dashed #ddd; padding-top: 30px; margin-top: 40px; }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .gallery-item img { width: 100%; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); aspect-ratio: 1 / 1; object-fit: cover;}
+        .gallery-item p { text-align: center; font-style: italic; color: #555; margin-top: 8px; font-size: 0.9rem;}
+        
+        .shayari-box {
+            background: #fff9fa;
+            border: 2px dashed #ffcdd2;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+        .shayari-box p {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: #880e4f;
+            margin: 0;
+            white-space: pre-wrap; /* Preserves line breaks */
+        }
+        
+        .confession-letter {
+            background: #fef9e7;
+            padding: 30px;
+            border-left: 5px solid #fbc02d;
+            margin-top: 20px;
+        }
+        .confession-letter p { 
+            line-height: 1.8; 
+            font-size: 1.2rem; 
+            font-family: 'Caveat', cursive;
+            white-space: pre-wrap; /* Preserves line breaks */
+        }
+        
+        .vibe-check-list { list-style: none; padding-left: 0; }
+        .vibe-check-list li {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #4a148c;
+        }
+        .vibe-check-list li::before { content: '👉'; margin-right: 10px; }
+
+        #final-back-button {
+            display: block;
+            margin: 30px auto 0 auto;
+            background: #333;
+        }
+        
+        /* Special theme for 'cla' password */
+        .cla-theme { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            #welcome-hero { flex-direction: column; padding: 40px 30px; }
+            #welcome-image { width: 120px; height: 120px; margin-right: 0; margin-bottom: 30px; }
+            #welcome-text { font-size: 2.2rem; text-align: center; }
+            .memories-container { padding: 20px; }
+            .memories-container h2 { font-size: 2rem; }
+            .memories-container h3 { font-size: 1.5rem; }
+            .shayari-box p { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===================== LOGIN PAGE ===================== -->
+    <div id="login-page" class="page">
+        <div class="login-container">
+            <h1>🤫 Our Secret Clubhouse 🤫</h1>
+            <div class="form-group">
+                <label for="category">Who are you? 🤔</label>
+                <select id="category"><option value="sisters">Sisters 👯‍♀️</option><option value="special">Special Ones ✨</option></select>
+            </div>
+            <div class="form-group">
+                <label for="password">Enter the Secret Code 🤫</label>
+                <input type="password" id="password" placeholder="************">
+            </div>
+            <button id="login-button">Unlock the Fun!</button>
+            <div id="error-message" class="hidden">WRONG CODE! ❌ Are you a spy?! 🤨</div>
+        </div>
+    </div>
+
+    <!-- ===================== WELCOME HERO PAGE ===================== -->
+    <div id="welcome-page" class="page hidden">
+        <div id="welcome-hero">
+            <img id="welcome-image" src="" alt="Profile Picture">
+            <h2 id="welcome-text"></h2>
+        </div>
+        <div class="navigation-buttons">
+            <button id="back-button-hero" class="nav-button">Go Back</button>
+            <button id="next-button" class="nav-button">Next &rarr;</button>
+        </div>
+    </div>
+
+    <!-- ===================== MEMORIES PAGE ===================== -->
+    <div id="memories-page" class="page hidden">
+        <div class="memories-container">
+            <h2 id="memories-title"></h2>
+
+            <!-- Section 1: Gallery -->
+            <h3>The Gallery of Us 🖼️</h3>
+            <div id="memories-gallery" class="gallery-grid">
+                <!-- Gallery items will be injected here by JavaScript -->
+            </div>
+
+            <!-- Section 2: Poem -->
+            <h3>A Poem For You 📜</h3>
+            <div class="shayari-box">
+                <p id="memories-shayari"></p>
+            </div>
+
+            <!-- Section 3: Confession Letter -->
+            <h3>My Dearest Confessions 💌</h3>
+            <div class="confession-letter">
+                <p id="memories-confession"></p>
+            </div>
+
+            <!-- Section 4: Vibe Check -->
+            <h3>Our Recent Vibe Check 😂🤔</h3>
+            <ul id="memories-vibe-check" class="vibe-check-list">
+                <!-- Vibe check items will be injected here by JavaScript -->
+            </ul>
+
+            <button id="final-back-button" class="nav-button">Return to Login</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Page Elements
+            const loginPage = document.getElementById('login-page');
+            const welcomePage = document.getElementById('welcome-page');
+            const memoriesPage = document.getElementById('memories-page');
+            
+            // Login Form
+            const categorySelect = document.getElementById('category');
+            const passwordInput = document.getElementById('password');
+            const loginButton = document.getElementById('login-button');
+            const errorMessage = document.getElementById('error-message');
+
+            // Welcome Page
+            const welcomeImage = document.getElementById('welcome-image');
+            const welcomeText = document.getElementById('welcome-text');
+            const backButtonHero = document.getElementById('back-button-hero');
+            const nextButton = document.getElementById('next-button');
+            
+            // Memories Page
+            const memoriesTitle = document.getElementById('memories-title');
+            const memoriesGallery = document.getElementById('memories-gallery');
+            const memoriesShayari = document.getElementById('memories-shayari');
+            const memoriesConfession = document.getElementById('memories-confession');
+            const memoriesVibeCheck = document.getElementById('memories-vibe-check');
+            const finalBackButton = document.getElementById('final-back-button');
+
+            let currentUserData = null; // To store data of the logged-in user
+            let currentUserKey = null; // To store the password key (e.g., 'yedee')
+
+            // --- THE BIG SECRET DATABASE ---
+            const secretData = {
+                sisters: {
+                    yedee:   { 
+                        name: "Tanu",
+                        msg: "Hi Yedee! 👋 Oops, I mean Tanu! 😉", 
+                        img: "yedee.jpg",
+                        shayari: `Oh Yedee, my chaos and calm in one,
+With you around, life’s never done.
+
+You scream, you pout, you roll your eyes,
+Yet still, you're my favorite surprise.
+
+You overreact like it's Broadway night,
+But hug like everything will be alright.
+
+Annoying? Yes. Rude? Sometimes true—
+But no one loves me quite like you. ❤️`,
+                        confession: `Hey Yedee,
+
+I know I don’t always say it, and maybe I act tough or tease you too much… but deep down, you’re the one person I never want to lose. You’re loud, dramatic, and yeah—super annoying sometimes—but you’re also the one who makes my world feel like home.
+
+Even when you’re being rude or over the top, I still smile inside, because that’s you—and I wouldn’t want you any other way. You’re not just my little sister, you're my favorite person, my safe place, my forever partner in crime.
+
+I love you more than you know... even when I pretend I don’t.
+– yash ❤️`,
+                        vibe_check: [
+                            "She’s annoying, loud, and overdramatic—yeah, that’s my comfort person.",
+                            "Low-key fights, high-key love… that’s the Yedee energy I live for.",
+                            "No matter how rude she gets, she’s still the one I’d choose every time. 💯❤️"
+                        ]
+                    },
+                                        kutre:   { 
+                        name: "Darshu Didi", 
+                        msg: "Ohh, you are back Kutre (Darshu) 🐶😂", 
+                        img: "kutre.jpg",
+                        shayari: `Fifteen days older, but you act like my mom,
+Still, your advice always keeps me calm.
+
+You read my mind like an open book,
+Even when I try hiding with a different look.
+
+You motivate me when I’m feeling low,
+And roast me faster than I can go.
+
+You’re my secret-keeper, my life’s GPS,
+But also my biggest “you messed up” SMS.`,
+                        confession: "Darshu, you’re like my built-in spoiler alert—you always know what’s coming in my life before I do. You give me motivation when I’m down, and the perfect amount of sarcasm when I’m flying too high. You’re the only one who can lecture me and make me laugh in the same breath. Honestly, you’re my sister, my coach, and sometimes my FBI agent… all in one package.",
+                        vibe_check: [
+                            "Older by days, wiser by decades… or so she claims.",
+                            "Her motivation lifts me, her roast humbles me.",
+                            "She knows me too well—it’s sweet, but also a little scary."
+                        ]
+                    },
+
+                                        bighead: { 
+                        name: "Rutu Didi", 
+                        msg: "Ohh hi dear Brain Kahu! (Rutu di) 🧠✨", 
+                        img: "bighead.jpg",
+                        shayari: `Mature to the world, but with me you’re a kid,
+Laughing at jokes we probably shouldn’t have did.
+
+You speak so calm, yet your words can spark fire,
+From deep talks to roasts, you never tire.
+
+You know every code, every inside line,
+And turn even silence into a cheeky sign.
+
+You’re the wise one, but still my crime mate,
+A sister, a mentor, and my favorite debate.`,
+                        confession: "Rutu, you’re like that book people think is all serious—until they open it and find every chapter full of wit, chaos, and things that can’t be repeated in public. You can talk about anything—from deep life advice to jokes that’d get us in trouble—and that’s why you’re my go-to for every mood. With you, I get wisdom wrapped in mischief… and honestly, I wouldn’t want it any other way.",
+                        vibe_check: [
+                            "Mature in the streets, mischief in the sheets—of paper we write jokes on.",
+                            "She can give a TED talk or roast you in the same breath.",
+                            "Knows every clean and not-so-clean joke in the dictionary."
+                        ]
+                    },            
+   dhakad:  { 
+                        name: "Teju didi", 
+                        msg: "Welcome, respected sister and mother of my special bhanji! 🙏💖", 
+                        img: "dhakad.jpg",
+                        shayari: `Teju didi, meri duniya ka noor hai,
+Uske bina sab kuch thoda kam zaroor hai.
+
+Mazboot hai woh, har tufaan se ladti hai,
+Muskurahat mein bhi poori duniya jhalakti hai.
+
+Ek pyari beti ki maa, par khud bhi ek rani hai,
+Har pal mein uski mamta ki meethas suhani hai.
+
+Khoobsurti mein chand bhi sharma jaye,
+Meri didi jaise dilwale har kisi ko kahan mil paye.`,
+                        confession: "Teju didi, I might not say it often, but I respect you more than words can explain. You’ve been my strength, my guide, and my safe space. You’re beautiful inside out, and the way you handle life and love your daughter inspires me every single day. I’m proud to call you my sister… and even prouder to learn from you. ❤️",
+                        vibe_check: [
+                            "She’s my strength wrapped in a beautiful smile.", 
+                            "Respect isn’t given—it’s earned, and she’s earned all of mine.", 
+                            "Big sister, big heart, bigger inspiration."
+                        ]
+                    },
+ jaduu: { name: "Somu", msg: "Hey there Somu, how have you been? 👽", img: "jaduu.jpg", shayari: "...", confession: "...", vibe_check: [] },
+                },
+                special: {
+                                        favgurl: { 
+                        name: "My One & Only Bhanji", 
+                        msg: "Hi there, my dear bhanji! Hope your mavshis are taking good care of you in my absence 😘❤️", 
+                        img: "favgurl.jpg",
+                        shayari: `From the moment you smiled, I claimed my throne,
+Best Mama in the world—yeah, that’s well known.
+
+Other mavshis can try, but they can’t compete,
+Because with me, bhanji, life’s always sweet.
+
+Your giggles are music, your hugs are gold,
+You’re my little princess, fierce yet bold.
+
+I’ll spoil you, protect you, and cheer you on too,
+No one loves you like this Mama does—you know it’s true.`,
+                        confession: "Bhanji, listen carefully—your Mama is not just a Mama, he’s the Mama. I’m the one who will sneak you chocolates when others say no, the one who’ll hype you up like you’re a superstar, and the one who’ll always take your side in every silly fight. You’re my pride, my joy, and my favorite tiny human… and honestly, I plan to keep my “Best Mama” title forever. Sorry to the mavshis—they never stood a chance.",
+                        vibe_check: [
+                            "Her favorite? Obviously the Mama with style.",
+                            "Other mavshis: 0, Mama: Champion forever.",
+                            "I’m not just family… I’m her VIP pass to fun."
+                        ]
+                    },
+                                        cla:     { 
+                        name: "Somu", 
+                        msg: "Welcome, my sole world, Somu 🌍💞", 
+                        img: "cla.jpg",
+                        shayari: `Somu, you wear maturity like a crown on your head,
+But inside, I know it’s just overthinking instead.
+
+Too innocent at times, yet your charm’s so rare,
+From your eyes to your hair—uff, I just stare.
+
+You fight with me often, but love me even more,
+And for our future, you’re building dreams I adore.
+
+Nazar na lage, meri perfect piece of art,
+I’m here forever—your home, your heart. ❤️`,
+                        confession: "Somu,the day 18th october 2024 The happiest day in my life, I know life’s making you focus on your dreams right now, and maybe I’m not getting all the importance I wish for—but I understand. I see your effort, I see your heart, and I’m proud of you. We fight, we argue, we tease, but none of that can shake what I feel for you. You’re beautiful, charming, and sometimes so innocent that I just want to wrap you up and protect you from the world. I want you to know—I’m here, I’m trying my best, and I’ll keep us together no matter what. You don’t have to worry… I’ve got us. Always.",
+                        vibe_check: [
+                            "She fights like a storm but loves like sunshine.",
+                            "Overthinks everything… except how much she loves me.",
+                            "Her eyes, her smile, her hair—yeah, I’m gone for life."
+                        ]
+                    }
+                }
+            };
+            
+            const showPage = (pageToShow) => {
+                [loginPage, welcomePage, memoriesPage].forEach(page => page.classList.add('hidden'));
+                pageToShow.classList.remove('hidden');
+            };
+
+            const handleLogin = () => {
+                const category = categorySelect.value;
+                const password = passwordInput.value.toLowerCase().trim();
+                const passwordList = secretData[category];
+
+                errorMessage.classList.add('hidden');
+                document.body.className = '';
+
+                if (passwordList && passwordList[password]) {
+                    currentUserKey = password; // e.g., 'yedee'
+                    currentUserData = passwordList[password];
+                    
+                    welcomeText.innerHTML = currentUserData.msg;
+                    welcomeImage.src = `images/${currentUserData.img}`;
+                    
+                    if (password === 'cla') document.body.classList.add('cla-theme');
+                    
+                    showPage(welcomePage);
+                } else {
+                    errorMessage.classList.remove('hidden');
+                }
+            };
+
+            const showMemories = () => {
+                if (!currentUserData) return;
+
+                // Populate Memories Page
+                memoriesTitle.textContent = `Our Story, ${currentUserData.name}`;
+                memoriesShayari.textContent = currentUserData.shayari;
+                memoriesConfession.textContent = currentUserData.confession;
+
+                // Clear and populate gallery
+                memoriesGallery.innerHTML = '';
+                for (let i = 1; i <= 4; i++) {
+                    const imageUrl = `images/${currentUserKey}${i}.jpg`;
+                    // Fallback placeholder in case the image is missing
+                    const placeholderUrl = `https://placehold.co/400x400/EEE/31343C?text=${currentUserKey}+${i}`;
+
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'gallery-item';
+                    galleryItem.innerHTML = `<img src="${imageUrl}" alt="Memory ${i}" onerror="this.onerror=null;this.src='${placeholderUrl}';"><p>A special moment...</p>`;
+                    memoriesGallery.appendChild(galleryItem);
+                }
+                
+                // Clear and populate vibe check
+                memoriesVibeCheck.innerHTML = '';
+                currentUserData.vibe_check.forEach(vibe => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = vibe;
+                    memoriesVibeCheck.appendChild(listItem);
+                });
+
+                showPage(memoriesPage);
+            };
+
+            const goBackToLogin = () => {
+                showPage(loginPage);
+                passwordInput.value = '';
+                errorMessage.classList.add('hidden');
+                document.body.className = '';
+                currentUserData = null;
+                currentUserKey = null;
+            };
+            
+            // --- Event Listeners ---
+            loginButton.addEventListener('click', handleLogin);
+            passwordInput.addEventListener('keyup', (e) => e.key === 'Enter' && handleLogin());
+            
+            nextButton.addEventListener('click', showMemories);
+            backButtonHero.addEventListener('click', goBackToLogin);
+            finalBackButton.addEventListener('click', goBackToLogin);
+        });
+    </script>
+
+</body>
+</html>
