@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -449,7 +450,7 @@ I’m here forever—your home, your heart. ❤️`,
                     currentUserData = passwordList[password];
                     
                     welcomeText.innerHTML = currentUserData.msg;
-                    welcomeImage.src = `images/${currentUserData.img}`;
+                    welcomeImage.src = `${currentUserData.img}`;
                     
                     if (password === 'cla') document.body.classList.add('cla-theme');
                     
@@ -470,7 +471,7 @@ I’m here forever—your home, your heart. ❤️`,
                 // Clear and populate gallery
                 memoriesGallery.innerHTML = '';
                 for (let i = 1; i <= 4; i++) {
-                    const imageUrl = `images/${currentUserKey}${i}.jpg`;
+                    const imageUrl = `${currentUserKey}${i}.jpg`;
                     // Fallback placeholder in case the image is missing
                     const placeholderUrl = `https://placehold.co/400x400/EEE/31343C?text=${currentUserKey}+${i}`;
 
@@ -486,7 +487,7 @@ I’m here forever—your home, your heart. ❤️`,
                     const listItem = document.createElement('li');
                     listItem.textContent = vibe;
                     memoriesVibeCheck.appendChild(listItem);
-                });
+});
 
                 showPage(memoriesPage);
             };
